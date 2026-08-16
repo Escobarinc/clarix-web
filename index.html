@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#06070a" />
+  <title>Clarix — Developer Studio · Software na míru</title>
+  <meta name="description" content="Clarix je developer studio. Stavíme software na míru pro firmy — CRM systémy, SaaS platformy, interní a monitorovací software. Nejdřív pochopíme váš byznys, potom postavíme řešení." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- ══════════ PRELOADER ══════════ -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__mark">CLARIX</div>
+      <div class="preloader__meta">
+        <span class="preloader__label">Developer Studio</span>
+        <span class="preloader__count" id="preload-count">000</span>
+      </div>
+      <div class="preloader__bar"><span id="preload-bar"></span></div>
+    </div>
+  </div>
+
+  <!-- ══════════ CUSTOM CURSOR ══════════ -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__ring"></div>
+    <div class="cursor__label" id="cursor-label"></div>
+  </div>
+
+  <!-- ══════════ ATMOSPHERE OVERLAYS ══════════ -->
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- ══════════ WEBGL STAGE ══════════ -->
+  <canvas id="stage" class="stage"></canvas>
+  <div class="stage-fallback" id="stage-fallback" aria-hidden="true"></div>
+
+  <!-- ══════════ NAVIGATION ══════════ -->
+  <header class="nav" id="nav">
+    <a href="#hero" class="nav__brand" data-cursor="brand" aria-label="Clarix — úvod">
+      <span class="nav__brand-mark">CLARIX</span>
+      <span class="nav__brand-sub">Developer Studio</span>
+    </a>
+    <nav class="nav__index" aria-label="Hlavní navigace">
+      <a href="#work" data-cursor="link" data-nav>Co stavíme</a>
+      <a href="#capabilities" data-cursor="link" data-nav>Proces</a>
+      <a href="#studio" data-cursor="link" data-nav>O nás</a>
+      <a href="#contact" data-cursor="link" data-nav>Kontakt</a>
+    </nav>
+    <a href="#contact" class="nav__cta" data-cursor="link">Pojďme na to <i>•</i></a>
+    <button class="nav__toggle" id="nav-toggle" aria-label="Otevřít menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ══════════ SOCIAL RAIL ══════════ -->
+  <div class="social" aria-label="Odkazy">
+    <a href="#" data-cursor="link">LinkedIn</a>
+    <a href="#" data-cursor="link">Instagram</a>
+    <a href="#" data-cursor="link">GitHub</a>
+    <a href="mailto:zednicek@clarix.cz" data-cursor="link">Email</a>
+  </div>
+
+  <!-- ══════════ MOBILE MENU ══════════ -->
+  <div class="menu" id="menu" aria-hidden="true">
+    <ul class="menu__list">
+      <li><a href="#work" data-menu-link><i>01</i> Co stavíme</a></li>
+      <li><a href="#capabilities" data-menu-link><i>02</i> Proces</a></li>
+      <li><a href="#studio" data-menu-link><i>03</i> O nás</a></li>
+      <li><a href="#contact" data-menu-link><i>04</i> Kontakt</a></li>
+    </ul>
+    <div class="menu__foot">
+      <span>Praha · Hradec Králové · Pardubice</span>
+      <span>+420 720 396 024</span>
+    </div>
+  </div>
+
+  <main id="content">
+    <!-- ══════════ HERO ══════════ -->
+    <section class="hero" id="hero" data-scene="origin">
+      <div class="hero__meta hero__meta--tr" id="frame-counter">FRAME 0000</div>
+
+      <div class="hero__col">
+        <span class="hero__eyebrow" data-reveal-soft>Inteligentní řešení <i>•</i></span>
+        <h1 class="hero__title">
+          <span class="hero__line" data-reveal><span>Na míru</span></span>
+          <span class="hero__line hero__line--muted" data-reveal><span>pro firmy.</span></span>
+        </h1>
+        <p class="hero__lede" data-reveal-soft>
+          Navrhujeme a vyvíjíme software na míru — CRM systémy, SaaS platformy
+          a interní nástroje, které <b>automatizují</b>, zpřehledňují a posouvají
+          váš byznys dál.
+        </p>
+        <a class="hero__cue" href="#work" data-cursor="scroll">
+          <span>Prozkoumat naše projekty</span>
+          <span class="hero__cue-line"></span>
+        </a>
+      </div>
+
+      <div class="hero__scene-label" data-reveal-soft>
+        <span>Praha · Hradec Králové · Pardubice</span>
+      </div>
+    </section>
+
+    <!-- ══════════ MANIFESTO STRIP ══════════ -->
+    <section class="strip" id="manifesto" data-scene="dissolve">
+      <p class="strip__text">
+        <span data-line>Většina studií rovnou programuje.</span>
+        <span data-line>My nejdřív pochopíme, jak to <em>funguje</em>.</span>
+        <span data-line>Software pak řeší skutečný problém.</span>
+      </p>
+      <div class="strip__index">
+        <span>02 — Jak pracujeme</span>
+        <span id="scroll-progress">0%</span>
+      </div>
+    </section>
+
+    <!-- ══════════ WORK / SPATIAL GALLERY ══════════ -->
+    <section class="work" id="work" data-scene="gallery">
+      <div class="work__head">
+        <div class="work__title">
+          <span class="eyebrow">03 — Co stavíme</span>
+          <h2>Software šitý<br />přesně na míru.</h2>
+        </div>
+        <div class="work__nav">
+          <button class="work__arrow" id="work-prev" aria-label="Předchozí" data-cursor="prev">←</button>
+          <span class="work__counter"><b id="work-current">01</b> / <span id="work-total">07</span></span>
+          <button class="work__arrow" id="work-next" aria-label="Další" data-cursor="next">→</button>
+        </div>
+      </div>
+
+      <div class="gallery" id="gallery" data-cursor="drag">
+        <div class="gallery__track" id="gallery-track"><!-- panels injected by JS --></div>
+      </div>
+
+      <div class="gallery__hint" aria-hidden="true">Táhni · scrolluj · přejeď</div>
+    </section>
+
+    <!-- ══════════ CAPABILITIES / PROCESS ══════════ -->
+    <section class="cap" id="capabilities" data-scene="morph">
+      <div class="cap__head">
+        <span class="eyebrow">04 — Proces</span>
+        <p class="cap__note">Od první schůzky po výsledky. Najeď na krok — pole se přeskládá.</p>
+      </div>
+      <ul class="cap__list" id="cap-list">
+        <li class="cap__item" data-morph="0" data-cursor="link">
+          <span class="cap__num">01</span>
+          <span class="cap__name">Analýza a zadání</span>
+          <span class="cap__desc">Pochopíme procesy, data a úzká místa dřív, než napíšeme řádek kódu.</span>
+        </li>
+        <li class="cap__item" data-morph="1" data-cursor="link">
+          <span class="cap__num">02</span>
+          <span class="cap__name">Návrh řešení</span>
+          <span class="cap__desc">Narovinu: co postavíme, jak to bude fungovat a co vám to přinese.</span>
+        </li>
+        <li class="cap__item" data-morph="2" data-cursor="link">
+          <span class="cap__num">03</span>
+          <span class="cap__name">Plán</span>
+          <span class="cap__desc">Jasný časový i finanční plán. Žádná překvapení, žádné skryté položky.</span>
+        </li>
+        <li class="cap__item" data-morph="3" data-cursor="link">
+          <span class="cap__num">04</span>
+          <span class="cap__name">Vývoj a předání</span>
+          <span class="cap__desc">Průběžně ukazujeme a ladíme. Po nasazení předáme i know-how.</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ══════════ STUDIO / ABOUT ══════════ -->
+    <section class="studio" id="studio" data-scene="converge">
+      <div class="studio__grid">
+        <p class="studio__statement" data-reveal-soft>
+          Nestavíme krabice. Stavíme systémy na <em>míru</em> —
+          postavené na datech a předané srozumitelně.
+          Dobrý software není o počtu funkcí, ale o tom,
+          jestli řeší skutečný problém.
+        </p>
+        <div class="studio__facts">
+          <div class="fact"><span>Tým</span><b>4 specialisté</b></div>
+          <div class="fact"><span>Města</span><b>Praha · HK · Pardubice</b></div>
+          <div class="fact"><span>Stack</span><b>React · Node · Python</b></div>
+          <div class="fact"><span>Přístup</span><b>Byznys → kód</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ CONTACT ══════════ -->
+    <section class="contact" id="contact" data-scene="collapse">
+      <div class="contact__meta">05 — Kontakt</div>
+      <h2 class="contact__gesture" data-cursor="brand">
+        <span data-reveal><span>Máte proces,</span></span>
+        <span data-reveal><span>který vás</span></span>
+        <span class="contact__accent" data-reveal><span>brzdí?</span></span>
+      </h2>
+      <div class="contact__actions">
+        <a class="contact__cta" href="tel:+420720396024" data-cursor="open">
+          <span>+420 720 396 024</span>
+          <span class="contact__cta-arrow">→</span>
+        </a>
+        <div class="contact__lines">
+          <span>zednicek@clarix.cz</span>
+          <span>První konzultace je nezávazná</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ FOOTER ══════════ -->
+    <footer class="footer">
+      <div class="footer__brand">CLARIX</div>
+      <div class="footer__cols">
+        <span>Praha · Hradec Králové · Pardubice</span>
+        <span><a href="mailto:zednicek@clarix.cz" data-cursor="link">zednicek@clarix.cz</a></span>
+        <span><a href="tel:+420720396024" data-cursor="link">+420 720 396 024</a></span>
+        <span>© 2026 Clarix — Developer Studio · clarix.cz</span>
+      </div>
+      <button class="footer__mute" id="mute" aria-pressed="false" data-cursor="link">
+        <span class="footer__mute-icon"></span> Zvuk · vyp
+      </button>
+    </footer>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

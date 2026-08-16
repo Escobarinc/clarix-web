@@ -1,0 +1,21 @@
+{
+  "name": "strom-realtime",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "STRØM — realtime digital experience. GPU particle sculpture, scroll-driven cinematic camera, spatial glass gallery.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5",
+    "lenis": "^1.1.13",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "terser": "^5.31.6",
+    "vite": "^5.4.8"
+  }
+}
