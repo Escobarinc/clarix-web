@@ -5,7 +5,6 @@ import Lenis from 'lenis';
 import World from './webgl/World.js';
 import Cursor from './core/Cursor.js';
 import Gallery from './core/Gallery.js';
-import { CAPABILITY_SHAPES } from './webgl/formations.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,12 +12,14 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const COARSE = window.matchMedia('(pointer: coarse)').matches;
 
 // section data-scene → sculpture formation
+// One continuous living vortex through the whole page (only the camera reframes it);
+// a single dramatic implosion at the very end.
 const SCENE_FORMATION = {
   origin: 'vortex',
-  dissolve: 'ribbon',
-  gallery: 'disc',
-  morph: 'sphere',
-  converge: 'column',
+  dissolve: 'vortex',
+  gallery: 'vortex',
+  morph: 'vortex',
+  converge: 'vortex',
   collapse: 'core',
 };
 
@@ -207,25 +208,19 @@ class Site {
     });
   }
 
-  /* ---------------- capabilities → morph the field ---------------- */
+  /* ---------------- capabilities → highlight only (no reshaping) ---------------- */
   initCapabilities() {
     const items = document.querySelectorAll('.cap__item');
-    let restore = null;
     items.forEach((item) => {
-      const shape = CAPABILITY_SHAPES[+item.dataset.morph] || 'sphere';
       const enter = () => {
         items.forEach((n) => n.classList.remove('is-active'));
         item.classList.add('is-active');
-        clearTimeout(restore);
-        this.world.morphTo(shape, 1.4);
       };
       item.addEventListener('pointerenter', enter);
       item.addEventListener('focus', enter);
     });
-    const list = document.getElementById('cap-list');
-    list?.addEventListener('pointerleave', () => {
+    document.getElementById('cap-list')?.addEventListener('pointerleave', () => {
       items.forEach((n) => n.classList.remove('is-active'));
-      restore = setTimeout(() => this.world.morphTo('sphere', 1.6), 200);
     });
   }
 
