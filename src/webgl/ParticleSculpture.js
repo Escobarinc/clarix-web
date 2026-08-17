@@ -46,7 +46,7 @@ export default class ParticleSculpture {
         uTime:        { value: 0 },
         uBlend:       { value: 0 },
         uSize:        { value: quality.size },
-        uNoiseAmp:    { value: 0.30 },
+        uNoiseAmp:    { value: 0.16 },
         uNoiseScale:  { value: 0.36 },
         uPointer:     { value: 0 },
         uPointerPos:  { value: new THREE.Vector3(999, 999, 999) },

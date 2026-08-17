@@ -22,6 +22,10 @@ const SCENE_FORMATION = {
   collapse: 'core',
 };
 
+// preview helper: ?shape=globe|hexagon|ring|cube|... forces the hero shape
+const FORCED_SHAPE = new URLSearchParams(location.search).get('shape');
+if (FORCED_SHAPE) SCENE_FORMATION.origin = FORCED_SHAPE;
+
 class Site {
   constructor() {
     this.world = new World(document.getElementById('stage'));
@@ -46,6 +50,8 @@ class Site {
     this.initCapabilities();
     this.initMute();
     this.initFrameCounter();
+
+    if (FORCED_SHAPE) this.world.morphTo(FORCED_SHAPE, 0.9);
 
     this.reveal();
   }

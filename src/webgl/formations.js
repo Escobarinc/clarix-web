@@ -55,6 +55,90 @@ export function vortex(count) {
   return a;
 }
 
+// ── recognizable wireframe shapes ───────────────────────────────
+
+// wireframe globe — latitude rings + meridian arcs
+export function globe(count) {
+  const a = new Float32Array(count * 3);
+  const R = 3.0, parallels = 7, meridians = 14;
+  for (let i = 0; i < count; i++) {
+    const j = (rand(i * 9.4) - 0.5) * 0.05; // slight thickness
+    if (rand(i * 1.1) < 0.5) {
+      const li = Math.floor(rand(i * 2.3) * parallels);
+      const lat = (-1 + 2 * (li + 0.5) / parallels) * (Math.PI / 2) * 0.92;
+      const ang = rand(i * 3.7) * TAU;
+      const r = R * Math.cos(lat);
+      a[i*3] = r*Math.cos(ang)+j; a[i*3+1] = R*Math.sin(lat)+j; a[i*3+2] = r*Math.sin(ang)+j;
+    } else {
+      const mi = Math.floor(rand(i * 4.9) * meridians);
+      const lon = (mi / meridians) * TAU;
+      const lat = (-1 + 2 * rand(i * 6.1)) * (Math.PI / 2);
+      const r = R * Math.cos(lat);
+      a[i*3] = r*Math.cos(lon)+j; a[i*3+1] = R*Math.sin(lat)+j; a[i*3+2] = r*Math.sin(lon)+j;
+    }
+  }
+  return a;
+}
+
+// hexagonal prism outline — the Clarix logo silhouette
+export function hexagon(count) {
+  const a = new Float32Array(count * 3);
+  const R = 2.9, h = 1.5;
+  const vx = [], vy = [];
+  for (let k = 0; k < 6; k++) { const ang = k / 6 * TAU + Math.PI / 6; vx.push(Math.cos(ang) * R); vy.push(Math.sin(ang) * R); }
+  for (let i = 0; i < count; i++) {
+    const kind = rand(i * 4.3);
+    if (kind > 0.82) { // vertical edges at vertices
+      const e = Math.floor(rand(i * 2.9) * 6);
+      a[i*3] = vx[e]; a[i*3+1] = vy[e]; a[i*3+2] = (rand(i * 5.1) - 0.5) * h;
+    } else {
+      const e = Math.floor(rand(i * 2.9) * 6), t = rand(i * 1.7);
+      const n = (e + 1) % 6;
+      a[i*3] = vx[e] + (vx[n] - vx[e]) * t;
+      a[i*3+1] = vy[e] + (vy[n] - vy[e]) * t;
+      a[i*3+2] = kind < 0.41 ? h / 2 : -h / 2;
+    }
+  }
+  return a;
+}
+
+// clean ring facing the camera
+export function ring(count) {
+  const a = new Float32Array(count * 3);
+  const R = 2.9, tube = 0.3, tilt = 0.35;
+  const ct = Math.cos(tilt), st = Math.sin(tilt);
+  for (let i = 0; i < count; i++) {
+    const u = rand(i * 1.9) * TAU, v = rand(i * 5.1) * TAU;
+    const rr = tube * (0.35 + 0.65 * rand(i * 7.7));
+    const x = (R + rr * Math.cos(v)) * Math.cos(u);
+    const y = (R + rr * Math.cos(v)) * Math.sin(u);
+    const z = rr * Math.sin(v);
+    a[i*3] = x; a[i*3+1] = y * ct - z * st; a[i*3+2] = y * st + z * ct;
+  }
+  return a;
+}
+
+// wireframe cube in a 3/4 view
+export function cube(count) {
+  const a = new Float32Array(count * 3);
+  const s = 2.0, c = [-s, s];
+  const ry = 0.6, rx = 0.42;
+  const cy = Math.cos(ry), sy = Math.sin(ry), cxx = Math.cos(rx), sxx = Math.sin(rx);
+  for (let i = 0; i < count; i++) {
+    const axis = Math.floor(rand(i * 1.3) * 3);
+    const t = rand(i * 2.7) * 2 * s - s;
+    const b1 = c[Math.floor(rand(i * 3.9) * 2)], b2 = c[Math.floor(rand(i * 5.3) * 2)];
+    let x, y, z;
+    if (axis === 0) { x = t; y = b1; z = b2; }
+    else if (axis === 1) { x = b1; y = t; z = b2; }
+    else { x = b1; y = b2; z = t; }
+    const x1 = x * cy - z * sy, z1 = x * sy + z * cy;       // rotate Y
+    const y1 = y * cxx - z1 * sxx, z2 = y * sxx + z1 * cxx; // rotate X
+    a[i*3] = x1; a[i*3+1] = y1; a[i*3+2] = z2;
+  }
+  return a;
+}
+
 // dispersed flowing sheet — particles smeared into a wide ribbon
 export function ribbon(count) {
   const a = new Float32Array(count * 3);
@@ -171,7 +255,7 @@ export function core(count) {
   return a;
 }
 
-export const FORMATIONS = { vortex, knot, ribbon, disc, sphere, torus, helix, lattice, column, core };
+export const FORMATIONS = { vortex, globe, hexagon, ring, cube, knot, ribbon, disc, sphere, torus, helix, lattice, column, core };
 
 // capability index → formation name
 export const CAPABILITY_SHAPES = ['helix', 'lattice', 'sphere', 'torus', 'disc'];
