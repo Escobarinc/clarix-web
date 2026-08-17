@@ -12,12 +12,12 @@ export default class ParticleSculpture {
     this.count = count;
     this.quality = quality;
     this._cache = new Map();
-    this.current = 'vortex';
+    this.current = 'orb';
 
     this.geometry = new THREE.BufferGeometry();
 
-    const posA = this._formation('vortex');
-    const posB = this._formation('vortex');
+    const posA = this._formation('orb');
+    const posB = this._formation('orb');
     const scale = new Float32Array(count);
     const seed = new Float32Array(count);
     const colorMix = new Float32Array(count);
@@ -40,25 +40,27 @@ export default class ParticleSculpture {
       vertexShader,
       fragmentShader,
       transparent: true,
-      depthWrite: false,
-      blending: quality.additive ? THREE.AdditiveBlending : THREE.NormalBlending,
+      depthTest: true,
+      depthWrite: true,               // real occlusion → the form reads as solid
+      blending: THREE.NormalBlending, // no additive white blow-out
       uniforms: {
         uTime:        { value: 0 },
         uBlend:       { value: 0 },
         uSize:        { value: quality.size },
-        uNoiseAmp:    { value: 0.16 },
-        uNoiseScale:  { value: 0.36 },
+        uNoiseAmp:    { value: 0.20 },
+        uNoiseScale:  { value: 0.30 },
         uPointer:     { value: 0 },
         uPointerPos:  { value: new THREE.Vector3(999, 999, 999) },
         uScrollVel:   { value: 0 },
         uDispersion:  { value: 0 },
         uPixelRatio:  { value: quality.pixelRatio },
-        uOpacity:     { value: quality.additive ? 0.46 : 0.85 },
-        uFadeNear:    { value: 6.0 },
-        uFadeFar:     { value: 20.0 },
-        uColorBase:   { value: new THREE.Color('#8ec5ff') }, // light blue
-        uColorCool:   { value: new THREE.Color('#0c2551') }, // deep blue
-        uColorAccent: { value: new THREE.Color('#3d8bff') }, // luminous mid blue
+        uOpacity:     { value: 0.95 },
+        uFadeNear:    { value: 7.0 },
+        uFadeFar:     { value: 22.0 },
+        uLightDir:    { value: new THREE.Vector3(0.55, 0.7, 0.6) },
+        uColorDeep:   { value: new THREE.Color('#08152f') }, // shadow / back
+        uColorLit:    { value: new THREE.Color('#4ea3ff') }, // lit surface
+        uColorRim:    { value: new THREE.Color('#8fd0ff') }, // rim glow
       },
     });
 

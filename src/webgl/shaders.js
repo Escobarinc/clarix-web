@@ -1,9 +1,10 @@
 /* ------------------------------------------------------------
-   STRØM particle sculpture — GLSL
-   Curl-noise displacement · morph blend · soft additive points
+   Clarix particle sculpture — GLSL
+   Lit, solid-reading point object. No additive white blow-out:
+   colour comes from a lighting model (diffuse + Fresnel rim),
+   depth-write gives real occlusion so the form looks full.
    ------------------------------------------------------------ */
 
-// Ashima simplex noise 3D — used to build a divergence-free curl field.
 const noiseGLSL = /* glsl */ `
 vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
 vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
@@ -73,11 +74,12 @@ uniform float uBlend;
 uniform float uSize;
 uniform float uNoiseAmp;
 uniform float uNoiseScale;
-uniform float uPointer;      // 0..1 pointer energy
-uniform vec3  uPointerPos;   // pointer in view-ish space
-uniform float uScrollVel;    // signed scroll velocity
-uniform float uDispersion;   // extra spread on transitions
+uniform float uPointer;
+uniform vec3  uPointerPos;
+uniform float uScrollVel;
+uniform float uDispersion;
 uniform float uPixelRatio;
+uniform vec3  uLightDir;
 
 attribute vec3 aPositionA;
 attribute vec3 aPositionB;
@@ -86,7 +88,9 @@ attribute float aSeed;
 attribute float aColorMix;
 
 varying float vDepth;
-varying float vEnergy;
+varying float vShade;
+varying float vFres;
+varying float vSpec;
 varying float vColorMix;
 varying float vSeed;
 
@@ -95,69 +99,79 @@ ${noiseGLSL}
 void main(){
   vec3 base = mix(aPositionA, aPositionB, uBlend);
 
-  // living curl field — evolves in time, breathes with scroll
-  float t = uTime * 0.08;
+  // gentle living displacement — a breathing surface, not a spray
+  float t = uTime * 0.07;
   vec3 field = curl(base * uNoiseScale + vec3(t, t*0.6, -t*0.4));
-  float amp = uNoiseAmp * (1.0 + uScrollVel * 1.4 + uDispersion * 2.2);
-  vec3 pos = base + field * amp * (0.5 + aScale);
+  float amp = uNoiseAmp * (1.0 + uScrollVel * 0.9 + uDispersion * 2.4);
+  vec3 pos = base + field * amp * (0.4 + aScale);
 
-  // pointer interaction — a soft swell toward the cursor
+  // pointer swell
   vec3 toPtr = uPointerPos - pos;
   float d = length(toPtr);
-  float pull = uPointer * exp(-d * d * 0.06) * 0.9;
-  pos += normalize(toPtr + 0.0001) * pull;
-  pos += field * pull * 0.5;
+  float pull = uPointer * exp(-d * d * 0.05) * 0.8;
+  pos += normalize(toPtr + 0.0001) * pull + field * pull * 0.4;
 
-  float energy = length(field) * amp + pull;
+  // lighting — approximate normal from the object centre, so the form
+  // reads as a solid volume: lit front, dark back, glowing rim
+  vec3 nrm = normalize(base + field * 0.2);
+  vec3 Ln = normalize(uLightDir);
+  float diff = clamp(dot(nrm, Ln), 0.0, 1.0);
+  diff = 0.14 + 0.86 * diff;                 // ambient floor + strong key light
 
-  vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-  vDepth = -mv.z;
-  vEnergy = energy;
+  vec4 world = modelMatrix * vec4(pos, 1.0);
+  vec3 V = normalize(cameraPosition - world.xyz);
+  float fres = pow(1.0 - clamp(dot(nrm, V), 0.0, 1.0), 3.0);
+  vec3 Rl = reflect(-Ln, nrm);
+  float spec = pow(clamp(dot(Rl, V), 0.0, 1.0), 18.0);
+
+  vShade = diff;
+  vFres = fres;
+  vSpec = spec;
   vColorMix = aColorMix;
   vSeed = aSeed;
 
+  vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+  vDepth = -mv.z;
   gl_Position = projectionMatrix * mv;
-  float size = uSize * aScale * uPixelRatio;
-  gl_PointSize = clamp(size * (28.0 / vDepth), 0.6, 9.0 * uPixelRatio);
+
+  float size = uSize * (0.7 + aScale) * uPixelRatio;
+  gl_PointSize = clamp(size * (30.0 / vDepth), 0.8, 11.0 * uPixelRatio);
 }
 `;
 
 export const fragmentShader = /* glsl */ `
 precision highp float;
-uniform vec3 uColorBase;
-uniform vec3 uColorCool;
-uniform vec3 uColorAccent;
+uniform vec3 uColorDeep;   // shadow / back
+uniform vec3 uColorLit;    // lit surface
+uniform vec3 uColorRim;    // rim glow
 uniform float uFadeNear;
 uniform float uFadeFar;
 uniform float uOpacity;
 
 varying float vDepth;
-varying float vEnergy;
+varying float vShade;
+varying float vFres;
+varying float vSpec;
 varying float vColorMix;
 varying float vSeed;
 
 void main(){
   vec2 uv = gl_PointCoord - 0.5;
   float r = length(uv);
-  if(r > 0.5) discard;
+  if (r > 0.5) discard;
 
-  // soft round particle with a bright core
-  float alpha = smoothstep(0.5, 0.0, r);
-  float core = smoothstep(0.28, 0.0, r);
+  // soft-but-solid disc so depth-write reads as a filled surface
+  float alpha = smoothstep(0.5, 0.32, r);
 
-  // palette: cool → warm off-white → rare accent on high energy
-  vec3 col = mix(uColorCool, uColorBase, clamp(vColorMix + 0.2, 0.0, 1.0));
-  float hot = smoothstep(0.35, 1.1, vEnergy);
-  col = mix(col, uColorAccent, hot * 0.55);
-  col += core * 0.16;
+  // lit blue body, deep-blue core in shadow, glowing rim, tight highlight
+  vec3 col = mix(uColorDeep, uColorLit, pow(vShade, 1.2));
+  col += uColorRim * vFres * 0.6;
+  col += uColorRim * vSpec * 0.9;            // specular sheen (blue, not white)
+  col += vSeed * 0.03;                       // faint per-grain variation
 
-  // depth fade — far points dissolve into the dark
   float depthFade = 1.0 - smoothstep(uFadeNear, uFadeFar, vDepth);
-  depthFade = clamp(depthFade, 0.05, 1.0);
+  depthFade = clamp(depthFade, 0.12, 1.0);
 
-  // faint per-particle twinkle
-  float tw = 0.85 + 0.15 * vSeed;
-
-  gl_FragColor = vec4(col, alpha * depthFade * uOpacity * tw);
+  gl_FragColor = vec4(col, alpha * uOpacity * depthFade);
 }
 `;

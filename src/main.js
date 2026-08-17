@@ -14,11 +14,11 @@ const COARSE = window.matchMedia('(pointer: coarse)').matches;
 
 // section data-scene → sculpture formation
 const SCENE_FORMATION = {
-  origin: 'vortex',
-  dissolve: 'ribbon',
-  gallery: 'disc',
-  morph: 'sphere',
-  converge: 'column',
+  origin: 'orb',
+  dissolve: 'orb',
+  gallery: 'orb',
+  morph: 'orb',
+  converge: 'orb',
   collapse: 'core',
 };
 

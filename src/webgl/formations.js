@@ -55,6 +55,23 @@ export function vortex(count) {
   return a;
 }
 
+// dense, full sphere — a solid-reading orb (surface + a little volume)
+export function orb(count) {
+  const a = new Float32Array(count * 3);
+  const R = 2.6;
+  for (let i = 0; i < count; i++) {
+    // bias strongly to the surface, keep a little interior for fullness
+    const shell = 0.72 + 0.28 * Math.pow(rand(i * 9.1), 1.6);
+    const rr = R * shell;
+    const u = rand(i * 2.2), v = rand(i * 6.6);
+    const th = Math.acos(2 * u - 1), ph = v * TAU;
+    a[i*3]   = rr * Math.sin(th) * Math.cos(ph);
+    a[i*3+1] = rr * Math.cos(th);
+    a[i*3+2] = rr * Math.sin(th) * Math.sin(ph);
+  }
+  return a;
+}
+
 // ── recognizable wireframe shapes ───────────────────────────────
 
 // wireframe globe — latitude rings + meridian arcs
@@ -255,7 +272,7 @@ export function core(count) {
   return a;
 }
 
-export const FORMATIONS = { vortex, globe, hexagon, ring, cube, knot, ribbon, disc, sphere, torus, helix, lattice, column, core };
+export const FORMATIONS = { orb, vortex, globe, hexagon, ring, cube, knot, ribbon, disc, sphere, torus, helix, lattice, column, core };
 
 // capability index → formation name
 export const CAPABILITY_SHAPES = ['helix', 'lattice', 'sphere', 'torus', 'disc'];
