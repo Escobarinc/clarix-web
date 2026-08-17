@@ -15,7 +15,7 @@ export default class CameraRig {
 
     // keyframed camera stations along the scroll timeline
     this.stations = [
-      { pos: new THREE.Vector3(0.2, 0.15, 6.5), look: new THREE.Vector3(-0.4, 0, 0) }, // hero — orb fills the frame
+      { pos: new THREE.Vector3(0, 0.2, 8.4),  look: new THREE.Vector3(0, 0, 0) },     // hero
       { pos: new THREE.Vector3(2.4, 0.6, 7.0), look: new THREE.Vector3(0.4, 0, 0) },   // manifesto
       { pos: new THREE.Vector3(0, -0.4, 9.2),  look: new THREE.Vector3(0, -0.2, 0) },  // work
       { pos: new THREE.Vector3(-2.0, 0.8, 7.6),look: new THREE.Vector3(-0.3, 0.1, 0) },// capabilities
