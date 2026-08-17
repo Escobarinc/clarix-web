@@ -37,6 +37,14 @@ class Site {
     // custom cursor (desktop only)
     if (!COARSE) this.cursor = new Cursor();
 
+    // preview helper: ?preview=work promotes the products section to the top
+    if (new URLSearchParams(location.search).get('preview') === 'work') {
+      ['hero', 'manifesto'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+    }
+
     // start the field immediately so it is alive behind the preloader
     this.world.start();
 

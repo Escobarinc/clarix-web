@@ -124,21 +124,25 @@
     <section class="work" id="work" data-scene="gallery">
       <div class="work__head">
         <div class="work__title">
-          <span class="eyebrow">03 — Co stavíme</span>
-          <h2>Software šitý<br />přesně na míru.</h2>
+          <span class="eyebrow">03 — Naše produkty</span>
+          <h2>Software, který<br />jsme postavili.</h2>
         </div>
         <div class="work__nav">
           <button class="work__arrow" id="work-prev" aria-label="Předchozí" data-cursor="prev">←</button>
-          <span class="work__counter"><b id="work-current">01</b> / <span id="work-total">07</span></span>
+          <span class="work__counter"><b id="work-current">01</b> / <span id="work-total">05</span></span>
           <button class="work__arrow" id="work-next" aria-label="Další" data-cursor="next">→</button>
         </div>
       </div>
 
       <div class="gallery" id="gallery" data-cursor="drag">
-        <div class="gallery__track" id="gallery-track"><!-- panels injected by JS --></div>
+        <div class="gallery__track" id="gallery-track"><!-- panely generuje JS --></div>
       </div>
 
-      <div class="gallery__hint" aria-hidden="true">Táhni · scrolluj · přejeď</div>
+      <div class="gallery__dots" id="gallery-dots" aria-hidden="true"></div>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__row" id="marquee-row"></div>
+      </div>
     </section>
 
     <!-- ══════════ CAPABILITIES / PROCESS ══════════ -->
